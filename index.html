@@ -1903,6 +1903,13 @@ const ZONA_CONFIGS = [
       hideHeader: true,
       limit: 5,
     },
+    fallbackItems: [
+      { value: 'ACESSÓRIOS MWS', dim: true },
+      { value: 'KIT APROXIMAÇÃO MWS715', dim: true },
+      'MWS300 SDS - 71L',
+      'MWS700RPK GAMAR',
+      'MWS500 SDS - 93L',
+    ],
   },
   {
     nome: 'Histórico',
@@ -2220,21 +2227,27 @@ function renderZones(rowData) {
   ZONA_CONFIGS.forEach(config => {
     if (config.type === 'list') {
       const src = config.listSource || {};
+      const fallback = config.fallbackItems || [];
       const cacheKey = src.mode === 'row-headers'
         ? `list|${src.tab}|rowheaders|${src.startColumn}-${src.endColumn}`
         : `list|${src.tab}|${src.column || src.header}`;
       const cached = ZONA_LIST_CACHE[cacheKey];
-      const card = buildZonaListCard(config, cached);
+      const card = buildZonaListCard(config, cached && cached.length ? cached : fallback);
       zg.appendChild(card);
 
       fetchZonaListValues(src)
         .then(values => {
-          ZONA_LIST_CACHE[cacheKey] = values;
-          const fresh = buildZonaListCard(config, values);
+          const items = values.length ? values : fallback;
+          ZONA_LIST_CACHE[cacheKey] = items;
+          const fresh = buildZonaListCard(config, items);
           card.replaceWith(fresh);
           applyActiveHighlight();
         })
-        .catch(err => console.warn(`Falha a carregar lista para "${config.nome}":`, err));
+        .catch(err => {
+          console.warn(`Falha a carregar lista para "${config.nome}":`, err);
+          ZONA_LIST_CACHE[cacheKey] = fallback;
+          card.replaceWith(buildZonaListCard(config, fallback));
+        });
     } else if (config.type === 'single') {
       const src = config.singleSource || {};
       const cacheKey = `single|${src.tab}|${src.column || src.header}`;
@@ -2362,6 +2375,7 @@ function loadAndRenderPaises(rowData) {
 }
 
 function renderSheetData(sheetRow) {
+  renderZones(sheetRow);
   if (!sheetRow) return;
 
   loadAndRenderPaises(sheetRow);
@@ -2403,7 +2417,6 @@ function renderSheetData(sheetRow) {
   renderText(operatorEl, operador, '--');
   updateEvolucao(parseSheetPercentage(geral));
 
-  renderZones(sheetRow);
 }
 
 function initializeSheetWatcher() {

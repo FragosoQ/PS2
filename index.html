@@ -2397,7 +2397,6 @@ function renderSheetData(sheetRow) {
   const geral = getSheetRowValue(sheetRow, 'GERAL', 'AK');
   const prioridadeAtiva = getSheetRowValue(sheetRow, 'Posto1', 'CI');
   const status = getSheetRowValue(sheetRow, 'STATUS', 'CF');
-  const operador = getSheetRowValue(sheetRow, 'Operador', 'AJ');
 
   renderText(dataInicioEl, inicio != null && String(inicio).trim() !== '' ? formatSheetDate(inicio) : DATE_PLACEHOLDER, DATE_PLACEHOLDER);
   renderText(dataPrevistaEl, previsto != null && String(previsto).trim() !== '' ? formatSheetDate(previsto) : DATE_PLACEHOLDER, DATE_PLACEHOLDER);
@@ -2414,7 +2413,7 @@ function renderSheetData(sheetRow) {
 
   setPrioridadeAtiva(prioridadeAtiva);
   updateStatus(status);
-  renderText(operatorEl, operador, 'Ilídio');
+  renderText(operatorEl, 'Ilídio');
   updateEvolucao(parseSheetPercentage(geral));
 
 }

@@ -583,6 +583,49 @@ main {
 .prazo-total { font-size: clamp(32px, 4.8vh, 48px); color: #fff; font-weight: 300; letter-spacing: -1px; }
 .prazo-unit { font-size: clamp(14px, 1.8vh, 18px); letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.75); align-self: flex-end; padding-bottom: clamp(6px, 1vh, 10px); }
 
+/* Faixa "Prioridade em Curso" no fundo da secção de evolução */
+.prio-curso {
+  align-self: stretch;
+  margin-top: auto;
+  padding: clamp(6px, 1vh, 12px) clamp(10px, 1.5vw, 18px) 0;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+.prio-curso[hidden] { display: none; }
+.prio-curso-top {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  margin-bottom: clamp(4px, 0.6vh, 8px);
+}
+.prio-curso-label {
+  font-size: clamp(11px, 1.5vh, 16px);
+  font-weight: 700; letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.6);
+}
+.prio-curso-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(16px, 2.2vh, 24px);
+  letter-spacing: 1px; line-height: 1.1;
+  color: #fff;
+}
+.prio-curso-pct {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(30px, 4.6vh, 56px);
+  line-height: .9;
+  color: #00d4ff;
+}
+.prio-curso-pct small { font-size: .55em; }
+.prio-curso-track {
+  height: clamp(4px, 0.6vh, 7px);
+  background: rgba(255,255,255,0.12);
+  border-radius: 4px; overflow: hidden;
+}
+.prio-curso-bar {
+  height: 100%; width: 0;
+  border-radius: 4px;
+  background: #00ff87;
+  transition: width .6s ease;
+}
+
 .prazo-track {
   height: clamp(8px, 1.2vh, 12px);
   background: rgba(255,255,255,0.12);
@@ -891,12 +934,12 @@ footer {
           <div class="id-modelo-label">País</div>
           <div class="id-pais">
             <span class="id-flag"></span>
-            <span class="id-pais-info">--</span>
+            <span class="id-pais-info">- · -</span>
           </div>
 
           <div class="id-cliente-label" style="margin-top:clamp(10px,2vh,20px);">Modelo / Equipamento</div>
-            <div class="id-modelo">--</div>
-            <div class="id-lote">Lote &nbsp;·&nbsp; --</div>
+          <div class="id-modelo">MWS715 SDS EXD DRD</div>
+          <div class="id-lote">Lote &nbsp;·&nbsp; 26L_1</div>
         </div>
       </div>
 
@@ -917,23 +960,35 @@ footer {
       <div class="globe-section" style="flex-direction:column;gap:clamp(6px,1vh,10px);position:relative;">
         <div class="h-priority h-priority-left" id="prioridadeAtiva">
           <span class="h-priority-label">Prioridade Ativa</span>
-          <span class="h-priority-value" id="prioridadeAtivaValue">--</span>
+          <span class="h-priority-value" id="prioridadeAtivaValue">—</span>
         </div>
-        <div style="font-size:clamp(14px,1.8vh,20px);font-weight:700;letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,0.75);">Evolução Global</div>
-        <div id="evNum" style="font-family:'Bebas Neue',sans-serif;font-size:clamp(140px,22vh,340px);line-height:.85;letter-spacing:-2px;">--</div>
-        <div id="statusLabel" style="font-size:clamp(15px,2vh,22px);letter-spacing:4px;color:rgba(255,255,255,0.75);text-transform:uppercase;">--</div>
+        <div style="margin-top:auto;font-size:clamp(14px,1.8vh,20px);font-weight:700;letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,0.75);">Evolução Global</div>
+        <div id="evNum" style="font-family:'Bebas Neue',sans-serif;font-size:clamp(140px,22vh,340px);line-height:.85;letter-spacing:-2px;">46%</div>
+        <div id="statusLabel" style="font-size:clamp(15px,2vh,22px);letter-spacing:4px;color:rgba(255,255,255,0.75);text-transform:uppercase;">Em Curso · ON</div>
+        <div class="prio-curso" id="prioCurso" hidden>
+          <div class="prio-curso-top">
+            <div>
+              <div class="prio-curso-label">Prioridade em Curso</div>
+              <div class="prio-curso-name" id="prioCursoName">—</div>
+            </div>
+            <div class="prio-curso-pct"><span id="prioCursoPct">0</span><small>%</small></div>
+          </div>
+          <div class="prio-curso-track">
+            <div class="prio-curso-bar" id="prioCursoBar"></div>
+          </div>
+        </div>
       </div>
 
       <!-- PRAZO -->
       <div class="prazo-section">
         <div class="prazo-top">
           <span class="prazo-label">Prazo</span>
-          <span class="prazo-folga" id="folgaSpan">--</span>
+          <span class="prazo-folga" id="folgaSpan">—</span>
         </div>
         <div class="prazo-numbers">
-          <div class="prazo-used" id="prazoUsed">--</div>
+          <div class="prazo-used" id="prazoUsed">6</div>
           <div class="prazo-div">/</div>
-          <div class="prazo-total">--</div>
+          <div class="prazo-total">8</div>
           <div class="prazo-unit">dias</div>
         </div>
         <div class="prazo-track">
@@ -946,11 +1001,11 @@ footer {
         <div class="details-inner">
           <div class="detail-row">
             <span class="d-k">Início</span>
-            <span class="d-v">--</span>
+            <span class="d-v">14 / 04 / 2026</span>
           </div>
           <div class="detail-row">
             <span class="d-k">Previsto</span>
-            <span class="d-v">--</span>
+            <span class="d-v">22 / 04 / 2026</span>
           </div>
         </div>
       </div>
@@ -963,10 +1018,10 @@ footer {
   <footer>
     <div class="f-left">
       <div class="f-dot"></div>
-      <span class="f-status">--</span>
+      <span class="f-status">Em Curso</span>
       <span class="f-op-divider" style="width:1px;height:20px;background:rgba(255,255,255,0.1);margin:0 8px;flex-shrink:0;"></span>
       <span class="f-op-label">Colaborador</span>
-      <span class="f-op">Ilídio</span>
+      <span class="f-op">ILÍDIO</span>
     </div>
     <div class="f-right">
       <div class="f-date" id="fdate">—</div>
@@ -986,11 +1041,11 @@ footer {
 <script>
 const SHEET_CONFIG_DEFAULT = {
   id: '1GQUB52a2gKR429bjqJrNkbP5rjR7Z_4v85z9M7_Cr8Y',
-  tab: 'PS2',
+  tab: 'PM1',
   keyHeader: null,
   keyValue: null,
-  targetHeader: 'GERAL',
-  targetColumn: 'AK',
+  targetHeader: 'EVOLUÇÃO',
+  targetColumn: 'Y',
 };
 
 // Cache system to avoid multiple fetches
@@ -1005,6 +1060,10 @@ function getCacheKey(config) {
 function getSheetEndpoint(config) {
   const sheetId = encodeURIComponent(config.id);
   const sheetTab = encodeURIComponent(config.tab);
+  // Com `range` (ex: 'L22:M26') pede só esse bloco de células, sem linha de cabeçalho.
+  if (config.range) {
+    return `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=${sheetTab}&range=${encodeURIComponent(config.range)}&headers=0`;
+  }
   return `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=${sheetTab}&headers=1`;
 }
 
@@ -1868,21 +1927,30 @@ const bc = v => v === 100 ? '#00ff87' : v > 0 ? '#00d4ff' : null;
 
 /* ── CONFIGURAÇÃO DE SHEET ── */
 const SHEET_POLL_INTERVAL = 20000;
-// PS2 é a fonte de todos os dados do painel.
+// PS2 é a fonte primária (watcher detecta mudanças neste separador).
+// O renderSheetData re-fetch ao PS2 e a outros separadores via fetchSecondaryRowFields.
 const SHEET_CONFIG = { id: '1GQUB52a2gKR429bjqJrNkbP5rjR7Z_4v85z9M7_Cr8Y', tab: 'PS2' };
+
+const FALLBACK_EV = 46;
 const evEl = document.getElementById('evNum');
 const modelEl = document.querySelector('.id-modelo');
+let modelDataAvailable = false;
+const MODEL_FALLBACK = modelEl ? modelEl.textContent.trim() : 'MWS715 SDS EXD DRD';
 const loteEl = document.querySelector('.id-lote');
+const LOTE_FALLBACK = loteEl ? loteEl.textContent.trim() : 'Lote · 26L_1';
+const paisInfoEl = document.querySelector('.id-pais-info');
+const PAIS_INFO_FALLBACK = paisInfoEl ? paisInfoEl.textContent.trim() : 'Peru · EN';
+const flagEl = document.querySelector('.id-flag');
 const paisContainerEl = document.querySelector('.id-pais');
 const dataInicioEl = document.querySelectorAll('.d-v')[0];
+const DATA_INICIO_FALLBACK = dataInicioEl ? dataInicioEl.textContent.trim() : '14 / 04 / 2026';
 const dataPrevistaEl = document.querySelectorAll('.d-v')[1];
+const DATA_PREVISTA_FALLBACK = dataPrevistaEl ? dataPrevistaEl.textContent.trim() : '22 / 04 / 2026';
 const folgaEl = document.getElementById('folgaSpan');
 const prazoUsedEl = document.getElementById('prazoUsed');
 const prazoBarEl = document.getElementById('prazoBar');
 const prazoTotalEl = document.querySelector('.prazo-total');
 const statusEl = document.getElementById('statusLabel');
-const footerStatusEl = document.querySelector('.f-status');
-const operatorEl = document.querySelector('.f-op');
 const zg = document.getElementById('zonasGrid');
 
 const ZONA_CONFIGS = [
@@ -1893,7 +1961,7 @@ const ZONA_CONFIGS = [
     type: 'list',
     tall: true,
     listSource: {
-      tab: 'PS2',
+      tab: 'soldaduraEditávelMulti',
       header: 'LOTE',
       column: 'D',
       // Lotes cuja coluna K (FIM SOLDADURA / ACABAMENTO) já está preenchida
@@ -1903,13 +1971,6 @@ const ZONA_CONFIGS = [
       hideHeader: true,
       limit: 5,
     },
-    fallbackItems: [
-      { value: 'ACESSÓRIOS MWS', dim: true },
-      { value: 'KIT APROXIMAÇÃO MWS715', dim: true },
-      'MWS300 SDS - 71L',
-      'MWS700RPK GAMAR',
-      'MWS500 SDS - 93L',
-    ],
   },
   {
     nome: 'Histórico',
@@ -1917,13 +1978,12 @@ const ZONA_CONFIGS = [
     listSource: {
       tab: 'PS2',
       mode: 'row-headers',
-      startColumn: 'CO',
-      endColumn: 'DK',
+      startColumn: 'AL',
+      endColumn: 'CE',
       ignoreLabels: ['%'],
       hideHeader: true,
       gridLayout: { cols: 4, rows: 3, flow: 'column' },
-      // Mostra apenas colunas cuja célula da linha 2 tem valor literal 1
-      matchValue: 1,
+      matchValue: 2,
       limit: 12,
     },
   },
@@ -1943,7 +2003,7 @@ const ZONA_CONFIGS = [
 // Cache simples para a lista de lotes — partilhado pelo refresh periódico
 const ZONA_LIST_CACHE = {};
 
-// Lote actual (vindo de PS2!D2). Actualizado por renderSheetData.
+// Modelo+Lote actual (vindo do PS2!D2). Actualizado por refreshPs1Details.
 // Usado para destacar o item correspondente nas listas (ex: Planeamento).
 let currentModeloLote = null;
 
@@ -1970,10 +2030,10 @@ function applyActiveHighlight() {
 }
 
 function updateEvolucao(value) {
-  const pct = Number.isFinite(value) ? value : null;
-  evEl.textContent = pct == null ? '--' : `${pct}%`;
-  evEl.style.color = pct == null ? 'rgba(255,255,255,0.4)' : ec(pct);
-  evEl.style.textShadow = pct == null ? 'none' : `0 0 60px ${ec(pct)}40`;
+  const pct = Number.isFinite(value) ? value : FALLBACK_EV;
+  evEl.textContent = `${pct}%`;
+  evEl.style.color = ec(pct);
+  evEl.style.textShadow = `0 0 60px ${ec(pct)}40`;
 }
 
 function getFieldValue(rowData, header, column, fallback = null) {
@@ -1984,15 +2044,14 @@ function getFieldValue(rowData, header, column, fallback = null) {
   return value;
 }
 
-function renderText(el, value, fallback = '--') {
+function renderText(el, value, fallback = '') {
   if (!el) return;
-  el.textContent = value != null && String(value).trim() !== '' ? String(value) : fallback;
+  el.textContent = value != null ? String(value) : fallback;
 }
 
 function renderLote(value) {
   if (!loteEl) return;
-  const lote = value != null && String(value).trim() !== '' ? value : '--';
-  loteEl.innerHTML = `Lote &nbsp;·&nbsp; ${escapeHtml(lote)}`;
+  loteEl.innerHTML = `Lote &nbsp;·&nbsp; ${String(value != null ? value : LOTE_FALLBACK)}`;
 }
 
 // Helper: escape básico para conteúdo dinâmico inserido via innerHTML
@@ -2008,15 +2067,19 @@ function escapeHtml(str) {
 // Promises in-flight de fetch a separadores secundários, para de-dupe no mesmo tick.
 const SECONDARY_TAB_INFLIGHT = {};
 
-// Vai buscar a linha 2 (primeira linha de dados) de um separador e devolve os
-// campos pedidos como { [chave]: valor }. Cada campo é { header, column }.
-// Faz de-dupe se já existe um fetch em curso para o mesmo separador.
-async function fetchSecondaryRowFields(tab, fields) {
+function fetchSecondaryTable(tab) {
   if (!SECONDARY_TAB_INFLIGHT[tab]) {
     SECONDARY_TAB_INFLIGHT[tab] = fetchSheetTable({ id: SHEET_CONFIG_DEFAULT.id, tab })
       .finally(() => { delete SECONDARY_TAB_INFLIGHT[tab]; });
   }
-  const table = await SECONDARY_TAB_INFLIGHT[tab];
+  return SECONDARY_TAB_INFLIGHT[tab];
+}
+
+// Vai buscar a linha 2 (primeira linha de dados) de um separador e devolve os
+// campos pedidos como { [chave]: valor }. Cada campo é { header, column }.
+// Faz de-dupe se já existe um fetch em curso para o mesmo separador.
+async function fetchSecondaryRowFields(tab, fields) {
+  const table = await fetchSecondaryTable(tab);
   const out = {};
   if (!table || !Array.isArray(table.rows) || !table.rows[0]) {
     return out;
@@ -2038,11 +2101,7 @@ async function fetchSecondaryRowFields(tab, fields) {
 // Nota técnica: o gviz com headers=1 desloca os índices — a linha 2 da Sheet
 // corresponde a rows[0], a linha 3 a rows[1], etc. Esta função abstrai isso.
 async function fetchSecondaryRowsRange(tab, columns, startRow, endRow) {
-  if (!SECONDARY_TAB_INFLIGHT[tab]) {
-    SECONDARY_TAB_INFLIGHT[tab] = fetchSheetTable({ id: SHEET_CONFIG_DEFAULT.id, tab })
-      .finally(() => { delete SECONDARY_TAB_INFLIGHT[tab]; });
-  }
-  const table = await SECONDARY_TAB_INFLIGHT[tab];
+  const table = await fetchSecondaryTable(tab);
   if (!table || !Array.isArray(table.rows)) return [];
 
   // Resolver o índice de cada coluna uma vez
@@ -2095,8 +2154,8 @@ async function fetchZonaListValues(source) {
     const ignore = new Set((source.ignoreLabels || []).map(s => String(s).trim()));
     const firstRow = table.rows[0]; // linha 2 da Sheet (gviz com headers=1 desloca)
     const limit = Math.max(1, source.limit || 50);
-    // matchValue: se definido (ex: 1), só mostra colunas cuja célula da linha 2
-    // tenha esse valor exacto. Compara como número (aceita 1, "1", "1.0").
+    // matchValue: se definido, só mostra colunas cuja célula da linha 2
+    // tenha esse valor exacto.
     const matchValue = source.matchValue;
     const hasMatchFilter = matchValue !== undefined && matchValue !== null;
     const values = [];
@@ -2151,24 +2210,24 @@ async function fetchZonaListValues(source) {
 
 function buildZonaPctCard(config, rowData) {
   // Suporta dois modos:
-  //   1) rowData é a linha completa do PS2 → vai buscar via getFieldValue
+  //   1) rowData é a linha completa do PM1 → vai buscar via getFieldValue
   //   2) rowData = { __raw: valor } → usa o valor directamente (cards lidos de separadores externos)
   let raw;
   if (rowData && Object.prototype.hasOwnProperty.call(rowData, '__raw')) {
     raw = rowData.__raw;
   } else {
-    raw = getFieldValue(rowData, config.header, config.column);
+    raw = getFieldValue(rowData, config.header, config.column, 0);
   }
-  const pct = parseSheetPercentage(raw);
+  const pct = parseSheetPercentage(raw) || 0;
   const cls = pct === 100 ? 'done' : pct > 0 ? 'going' : 'empty';
-  const col = pct == null ? null : bc(pct);
+  const col = bc(pct);
   const card = document.createElement('div');
   card.className = `zona-card ${cls}${config.tall ? ' tall' : ''}`;
   card.innerHTML = `
     <div class="zona-card-label">${escapeHtml(config.nome)}</div>
-    <div class="zona-card-pct" style="color:${col || 'rgba(255,255,255,0.4)'}">${pct == null ? '--' : `${pct}%`}</div>
+    <div class="zona-card-pct" style="color:${col || 'rgba(255,255,255,0.15)'}">${pct}%</div>
     <div class="zona-card-bar">
-      <div class="zona-card-fill" style="width:${pct == null ? 0 : pct}%;background:${col || 'rgba(255,255,255,0.07)'}"></div>
+      <div class="zona-card-fill" style="width:${pct}%;background:${col || 'rgba(255,255,255,0.07)'}"></div>
     </div>`;
   return card;
 }
@@ -2187,7 +2246,7 @@ function buildZonaListCard(config, items) {
         const dim = !!(item && typeof item === 'object' && item.dim);
         return `<div class="zona-card-list-item${dim ? ' dim' : ''}">${escapeHtml(text)}</div>`;
       }).join('')
-    : '<div class="zona-card-list-empty">--</div>';
+    : '<div class="zona-card-list-empty">Sem dados</div>';
 
   const src = config.listSource || {};
   const headerLabel = src.headerLabel || src.header || 'LOTE';
@@ -2218,7 +2277,7 @@ function buildZonaSingleCard(config, value) {
   card.className = `zona-card single ${cls}${config.tall ? ' tall' : ''}`;
   card.innerHTML = `
     <div class="zona-card-label">${escapeHtml(config.nome)}</div>
-    <div class="zona-card-single-value">${escapeHtml(txt || '--')}</div>`;
+    <div class="zona-card-single-value">${escapeHtml(txt || '—')}</div>`;
   return card;
 }
 
@@ -2227,27 +2286,21 @@ function renderZones(rowData) {
   ZONA_CONFIGS.forEach(config => {
     if (config.type === 'list') {
       const src = config.listSource || {};
-      const fallback = config.fallbackItems || [];
       const cacheKey = src.mode === 'row-headers'
         ? `list|${src.tab}|rowheaders|${src.startColumn}-${src.endColumn}`
         : `list|${src.tab}|${src.column || src.header}`;
       const cached = ZONA_LIST_CACHE[cacheKey];
-      const card = buildZonaListCard(config, cached && cached.length ? cached : fallback);
+      const card = buildZonaListCard(config, cached);
       zg.appendChild(card);
 
       fetchZonaListValues(src)
         .then(values => {
-          const items = values.length ? values : fallback;
-          ZONA_LIST_CACHE[cacheKey] = items;
-          const fresh = buildZonaListCard(config, items);
+          ZONA_LIST_CACHE[cacheKey] = values;
+          const fresh = buildZonaListCard(config, values);
           card.replaceWith(fresh);
           applyActiveHighlight();
         })
-        .catch(err => {
-          console.warn(`Falha a carregar lista para "${config.nome}":`, err);
-          ZONA_LIST_CACHE[cacheKey] = fallback;
-          card.replaceWith(buildZonaListCard(config, fallback));
-        });
+        .catch(err => console.warn(`Falha a carregar lista para "${config.nome}":`, err));
     } else if (config.type === 'single') {
       const src = config.singleSource || {};
       const cacheKey = `single|${src.tab}|${src.column || src.header}`;
@@ -2286,143 +2339,332 @@ function renderZones(rowData) {
   applyActiveHighlight();
 }
 
-function updateDeadline(totalValue, remainingValue, usedValue) {
-  const asNumber = value => {
-    if (value == null || String(value).trim() === '') return null;
-    const number = Number(String(value).replace(',', '.'));
-    return Number.isFinite(number) ? number : null;
+function updateDeadline(startValue, dueValue) {
+  // Helper: limpa o bloco de prazo para o estado "sem dados"
+  const clearDeadline = () => {
+    const dash = '-';
+    if (prazoUsedEl) {
+      prazoUsedEl.textContent = dash;
+      prazoUsedEl.style.color = 'rgba(255,255,255,0.4)';
+      prazoUsedEl.style.textShadow = 'none';
+    }
+    if (prazoTotalEl) {
+      prazoTotalEl.textContent = dash;
+    }
+    const unitEl = document.querySelector('.prazo-unit');
+    if (unitEl) {
+      unitEl.textContent = 'DIAS';
+    }
+    if (prazoBarEl) {
+      prazoBarEl.style.width = '0%';
+      prazoBarEl.style.background = 'rgba(255,255,255,0.15)';
+    }
+    if (folgaEl) {
+      folgaEl.textContent = '—';
+      folgaEl.style.color = 'rgba(255,255,255,0.4)';
+    }
   };
-  const total = asNumber(totalValue);
-  const remaining = asNumber(remainingValue);
-  const used = asNumber(usedValue);
-  const ratio = total > 0 && used != null ? Math.min(1, used / total) : 0;
+
+  if (startValue == null || String(startValue).trim() === '' ||
+      dueValue == null || String(dueValue).trim() === '') {
+    clearDeadline();
+    return;
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const total = getWorkDaysCount(startValue, dueValue, true);
+  const used = getWorkDaysCount(startValue, today, true);
+  const remaining = getWorkDaysCount(today, dueValue, false);
+
+  if (total == null || used == null || remaining == null) {
+    clearDeadline();
+    return;
+  }
+
+  const ratio = total > 0 ? Math.min(1, used / total) : 0;
   const pc = ratio >= .9 ? '#ff3b3b' : ratio >= .7 ? '#ffaa00' : '#00ff87';
 
   if (prazoUsedEl) {
-    prazoUsedEl.textContent = used == null ? '--' : used;
-    prazoUsedEl.style.color = used == null ? 'rgba(255,255,255,0.4)' : pc;
-    prazoUsedEl.style.textShadow = used == null ? 'none' : `0 0 40px ${pc}50`;
+    prazoUsedEl.textContent = used;
+    prazoUsedEl.style.color = pc;
+    prazoUsedEl.style.textShadow = `0 0 40px ${pc}50`;
   }
-  if (prazoTotalEl) prazoTotalEl.textContent = total == null ? '--' : total;
   if (prazoBarEl) {
     prazoBarEl.style.width = `${ratio * 100}%`;
-    prazoBarEl.style.background = used == null || total == null ? 'rgba(255,255,255,0.15)' : pc;
+    prazoBarEl.style.background = pc;
   }
   if (folgaEl) {
-    folgaEl.textContent = remaining == null ? '--' : `${remaining} dias restantes`;
-    folgaEl.style.color = remaining == null ? 'rgba(255,255,255,0.4)' : remaining <= 1 ? '#ff3b3b' : remaining <= 3 ? '#ffaa00' : '#00ff87';
+    folgaEl.textContent = `${remaining} dias restantes`;
+    folgaEl.style.color = remaining <= 1 ? '#ff3b3b' : remaining <= 3 ? '#ffaa00' : '#00ff87';
+  }
+  if (prazoTotalEl) {
+    prazoTotalEl.textContent = total;
   }
   const unitEl = document.querySelector('.prazo-unit');
-  if (unitEl) unitEl.textContent = 'dias';
+  if (unitEl) {
+    unitEl.textContent = 'dias';
+  }
 }
 
-function updateStatus(value) {
-  const status = value != null && String(value).trim() !== '' ? String(value).trim() : '--';
-  if (statusEl) statusEl.textContent = status.toUpperCase();
-  if (footerStatusEl) footerStatusEl.textContent = status;
+function updateStatus(chaveValue) {
+  if (!statusEl) return;
+  const hasValue = chaveValue != null && String(chaveValue).trim().length > 0;
+  statusEl.textContent = hasValue ? 'EM CURSO · ON' : 'STANDBY';
 }
 
-/* ── PAÍSES (PS2) ── */
-const PAIS_PLACEHOLDER = '--';
+/* ── PAÍSES (montagemEditável!L22:M26) ── */
+const PAIS_PLACEHOLDER = '- · -';
+// Lido por range explícito: o gviz omite linhas vazias quando se pede o separador
+// inteiro, pelo que o índice da linha deixa de corresponder ao número da linha na Sheet.
+const PAIS_RANGE = { tab: 'montagemEditável', range: 'L22:M26' };
 
 function setPaisEmpty() {
   if (!paisContainerEl) return;
   paisContainerEl.classList.remove('is-grid');
   paisContainerEl.innerHTML = `
     <span class="id-flag"></span>
-    <span class="id-pais-info">${PAIS_PLACEHOLDER}</span>`;
+    <span class="id-pais-info">${modelDataAvailable ? PAIS_PLACEHOLDER : '--'}</span>`;
 }
 
-function setPaisSingle(pais) {
+function setPaisSingle(pais, idioma) {
   if (!paisContainerEl) return;
+  if (!modelDataAvailable) { setPaisEmpty(); return; }
   paisContainerEl.classList.remove('is-grid');
   const flag = getCountryFlag(pais) || '';
+  const idiomaTxt = idioma ? idioma.toUpperCase() : '—';
   paisContainerEl.innerHTML = `
     <span class="id-flag">${escapeHtml(flag)}</span>
-    <span class="id-pais-info">${escapeHtml(pais.toUpperCase())}</span>`;
+    <span class="id-pais-info">${escapeHtml(pais.toUpperCase())} · ${escapeHtml(idiomaTxt)}</span>`;
 }
 
-function setPaisGrid(paises) {
+function setPaisGrid(pares) {
   if (!paisContainerEl) return;
+  if (!modelDataAvailable) { setPaisEmpty(); return; }
   paisContainerEl.classList.add('is-grid');
-  paisContainerEl.innerHTML = paises.map(pais => {
-    const flag = getCountryFlag(pais) || '';
+  paisContainerEl.innerHTML = pares.map(p => {
+    const flag = getCountryFlag(p.pais) || '';
+    const idiomaTxt = p.idioma ? p.idioma.toUpperCase() : '—';
     return `
       <div class="id-pais-cell">
         <span class="id-flag">${escapeHtml(flag)}</span>
-        <span class="id-pais-info">${escapeHtml(pais.toUpperCase())}</span>
+        <span class="id-pais-info">${escapeHtml(p.pais.toUpperCase())} · ${escapeHtml(idiomaTxt)}</span>
       </div>`;
   }).join('');
 }
 
-function loadAndRenderPaises(rowData) {
-  const paises = ['País 1', 'País 2', 'País 3']
-    .map(header => getSheetRowValue(rowData, header))
-    .filter(value => value != null && String(value).trim() !== '')
-    .map(value => String(value).trim());
+function loadAndRenderPaises() {
+  return fetchSheetTable({ id: SHEET_CONFIG_DEFAULT.id, ...PAIS_RANGE }).then(table => {
+    const rows = table && Array.isArray(table.rows) ? table.rows : [];
+    const cellText = (row, idx) => {
+      const value = getValueFromRow(row, idx);
+      return value != null ? String(value).trim() : '';
+    };
+    // Coluna 0 = L (país), coluna 1 = M (idioma)
+    const valid = rows
+      .map(row => ({ pais: cellText(row, 0), idioma: cellText(row, 1) }))
+      .filter(r => r.pais !== '');
 
-  if (paises.length === 0) {
+    if (valid.length === 0) {
+      setPaisEmpty();
+      if (typeof updateGlobeDestinations === 'function') {
+        updateGlobeDestinations([]);
+      }
+      return;
+    }
+
+    // Ordenação alfabética pelo nome do país (locale PT, insensível a acentos/maiúsculas)
+    valid.sort((a, b) => a.pais.localeCompare(b.pais, 'pt', { sensitivity: 'base' }));
+
+    if (valid.length === 1) {
+      setPaisSingle(valid[0].pais, valid[0].idioma);
+    } else {
+      setPaisGrid(valid);
+    }
+
+    // Marcar todos os países no globo (Portugal mantém-se sempre como origem)
+    if (typeof updateGlobeDestinations === 'function') {
+      updateGlobeDestinations(valid.map(r => r.pais));
+    }
+  }).catch(err => {
+    console.warn('Falha a carregar países do montagemEditável:', err);
     setPaisEmpty();
-  } else if (paises.length === 1) {
-    setPaisSingle(paises[0]);
-  } else {
-    setPaisGrid(paises);
+    if (typeof updateGlobeDestinations === 'function') {
+      updateGlobeDestinations([]);
+    }
+  });
+}
+
+// Modelo/Lote (PS2!D2), Início (PS2!J2), Previsto (PS2!F2) e estado (PS2!A2).
+function refreshPs1Details() {
+  const DATE_PLACEHOLDER = '-- / -- / ----';
+  const MODEL_PLACEHOLDER = '—';
+
+  // Separa "MWS500 SDS - 87L" → { modelo: "MWS500 SDS", lote: "87L" }.
+  // Se não terminar em "<2 dígitos>L", devolve { modelo: <string toda>, lote: null }.
+  function parseModeloLote(raw) {
+    const text = raw == null ? '' : String(raw).trim();
+    if (text === '' || /^[-–—]+$/.test(text)) return { modelo: '', lote: null };
+    // Padrão: começa pela parte do modelo, segue " - " (espaços flexíveis), 2 dígitos + L no fim
+    const m = text.match(/^(.*?)\s*-\s*(\d{2}L)$/);
+    if (m) {
+      return { modelo: m[1].trim(), lote: m[2] };
+    }
+    return { modelo: text, lote: null };
   }
 
-  if (typeof updateGlobeDestinations === 'function') {
-    updateGlobeDestinations(paises);
-  }
+  return fetchSecondaryRowFields('PS2', {
+    inicio: { header: 'INÍCIO SOLDADURA / ACABAMENTO', column: 'J' },
+    previsto: { header: 'DATA PRETENDIDA', column: 'F' },
+    modeloLote: { header: 'LOTE', column: 'D' },
+    chaveProcura: { header: 'Chave de Procura', column: 'A' },
+  }).then(({ inicio, previsto, modeloLote, chaveProcura }) => {
+    const inicioFmt = inicio != null && String(inicio).trim() !== ''
+      ? formatSheetDate(inicio) || DATE_PLACEHOLDER
+      : DATE_PLACEHOLDER;
+    const previstoFmt = previsto != null && String(previsto).trim() !== ''
+      ? formatSheetDate(previsto) || DATE_PLACEHOLDER
+      : DATE_PLACEHOLDER;
+    renderText(dataInicioEl, inicioFmt, DATE_PLACEHOLDER);
+    renderText(dataPrevistaEl, previstoFmt, DATE_PLACEHOLDER);
+    updateDeadline(inicio, previsto);
+
+    const { modelo, lote } = parseModeloLote(modeloLote);
+    modelDataAvailable = Boolean(modelo);
+    renderText(modelEl, modelo || MODEL_PLACEHOLDER, MODEL_PLACEHOLDER);
+    loadAndRenderPaises();
+    if (loteEl) {
+      loteEl.innerHTML = lote
+        ? `Lote &nbsp;·&nbsp; ${escapeHtml(lote)}`
+        : 'Sem Lote';
+    }
+    // Actualiza referência usada pelas listas para destacar o item activo
+    currentModeloLote = (modelo && lote) ? `${modelo} - ${lote}` : null;
+    applyActiveHighlight();
+
+    updateStatus(chaveProcura);
+  }).catch(err => {
+    console.warn('Falha a carregar dados do PS2:', err);
+    modelDataAvailable = false;
+    loadAndRenderPaises();
+    renderText(dataInicioEl, DATE_PLACEHOLDER, DATE_PLACEHOLDER);
+    renderText(dataPrevistaEl, DATE_PLACEHOLDER, DATE_PLACEHOLDER);
+    updateDeadline(null, null);
+    renderText(modelEl, MODEL_PLACEHOLDER, MODEL_PLACEHOLDER);
+    if (loteEl) {
+      loteEl.innerHTML = 'Sem Lote';
+    }
+    updateStatus(null);
+    currentModeloLote = null;
+    applyActiveHighlight();
+  });
 }
 
 function renderSheetData(sheetRow) {
-  renderZones(sheetRow);
   if (!sheetRow) return;
 
-  loadAndRenderPaises(sheetRow);
-  const DATE_PLACEHOLDER = '--';
-  const MODEL_PLACEHOLDER = '--';
+  // Modelo, Lote e datas vêm do PS2 (refreshPs1Details)
+  // Evolução Global vem do PS2!AK (refreshPs1Fields)
+  // Países vêm de montagemEditável (refrescados pelo seu próprio watcher — ver loadAndRenderPaises)
+  refreshPs1Details();
+  refreshPs1Fields();
+  renderZones(sheetRow);
+}
 
-  // Atualiza o badge "Prioridade Ativa" no canto superior esquerdo
-  const ativaBox = document.getElementById('prioridadeAtiva');
-  const ativaValueEl = document.getElementById('prioridadeAtivaValue');
-  function setPrioridadeAtiva(value) {
-    const txt = value != null && String(value).trim() !== '' ? String(value).trim() : null;
-    if (ativaValueEl) ativaValueEl.textContent = txt || '--';
-    if (ativaBox) ativaBox.classList.toggle('is-empty', !txt);
+function getPs1ActivePriorityPercentage(table, row, activePriority) {
+  const priorityNumber = Number(String(activePriority == null ? '' : activePriority).trim());
+  if (!Number.isInteger(priorityNumber) || priorityNumber < 1) return null;
+
+  const startIndex = columnLetterToIndex('AL');
+  const endIndex = columnLetterToIndex('CE');
+  const targetHeader = normalizeString(`P${priorityNumber}`);
+  for (let index = startIndex; index <= endIndex && index + 1 < table.cols.length; index += 1) {
+    const header = normalizeString(table.cols[index].label || table.cols[index].id || '');
+    if (header !== targetHeader) continue;
+
+    const percentageHeader = normalizeString(table.cols[index + 1].label || table.cols[index + 1].id || '');
+    if (percentageHeader !== '%') return null;
+
+    const rawPercentage = getValueFromRow(row, index + 1);
+    if (rawPercentage == null || String(rawPercentage).trim() === '') return null;
+    const percentage = parseSheetPercentage(rawPercentage);
+    return percentage != null && percentage !== 100 ? percentage : null;
   }
+  return null;
+}
 
-  const inicio = getSheetRowValue(sheetRow, 'INÍCIO SOLDADURA / ACABAMENTO', 'J');
-  const previsto = getSheetRowValue(sheetRow, 'DATA PRETENDIDA', 'F');
-  const lote = getSheetRowValue(sheetRow, 'LOTE', 'D');
-  const geral = getSheetRowValue(sheetRow, 'GERAL', 'AK');
-  const prioridadeAtiva = getSheetRowValue(sheetRow, 'Posto1', 'CI');
-  const status = getSheetRowValue(sheetRow, 'STATUS', 'CF');
+async function fetchPs1Summary() {
+  const table = await fetchSecondaryTable('PS2');
+  const row = table && Array.isArray(table.rows) ? table.rows[0] : null;
+  const readValue = (header, column) => {
+    const index = findSheetCell(table, header, column);
+    return index >= 0 ? getValueFromRow(row, index) : null;
+  };
+  const prioridadeAtiva = readValue('Posto2', 'CJ');
+  return {
+    prioridadeAtiva,
+    prioridadeAtivaPct: getPs1ActivePriorityPercentage(table, row, prioridadeAtiva),
+    geral: readValue('GERAL', 'AK'),
+  };
+}
 
-  renderText(dataInicioEl, inicio != null && String(inicio).trim() !== '' ? formatSheetDate(inicio) : DATE_PLACEHOLDER, DATE_PLACEHOLDER);
-  renderText(dataPrevistaEl, previsto != null && String(previsto).trim() !== '' ? formatSheetDate(previsto) : DATE_PLACEHOLDER, DATE_PLACEHOLDER);
-  updateDeadline(
-    getSheetRowValue(sheetRow, 'Dias Prazo', 'DL'),
-    getSheetRowValue(sheetRow, 'Folga', 'DM'),
-    getSheetRowValue(sheetRow, 'Dias Usados', 'DN')
-  );
+// Faixa "Prioridade em Curso": % de realização da prioridade ativa.
+// Fica escondida quando não há prioridade ativa ou % disponível.
+function updatePrioridadeEmCurso(prioridade, pct) {
+  const box = document.getElementById('prioCurso');
+  if (!box) return;
+  const visible = Boolean(prioridade) && pct != null;
+  box.hidden = !visible;
+  if (!visible) return;
+  document.getElementById('prioCursoName').textContent = /^\d+$/.test(prioridade) ? `P${prioridade}` : prioridade;
+  document.getElementById('prioCursoPct').textContent = pct;
+  document.getElementById('prioCursoBar').style.width = `${Math.max(0, Math.min(100, pct))}%`;
+}
 
-  renderText(modelEl, MODEL_PLACEHOLDER, MODEL_PLACEHOLDER);
-  renderLote(lote);
-  currentModeloLote = lote != null && String(lote).trim() !== '' ? String(lote).trim() : null;
-  applyActiveHighlight();
+function refreshPs1Fields() {
+  return fetchPs1Summary().then(({ prioridadeAtiva, prioridadeAtivaPct, geral }) => {
+    const ativaBox = document.getElementById('prioridadeAtiva');
+    const ativaValueEl = document.getElementById('prioridadeAtivaValue');
+    const prioridade = prioridadeAtiva != null && String(prioridadeAtiva).trim() !== ''
+      ? String(prioridadeAtiva).trim()
+      : null;
+    if (ativaValueEl) ativaValueEl.textContent = prioridade || '—';
+    if (ativaBox) ativaBox.classList.toggle('is-empty', !prioridade);
+    updatePrioridadeEmCurso(prioridade, prioridadeAtivaPct);
 
-  setPrioridadeAtiva(prioridadeAtiva);
-  updateStatus(status);
-  renderText(operatorEl, 'Ilídio');
-  updateEvolucao(parseSheetPercentage(geral));
-
+    const geralPct = parseSheetPercentage(geral);
+    if (geralPct == null) {
+      console.warn('[evolução] valor de GERAL (PS2!AK2) não parseável:', geral);
+    } else {
+      console.log('[evolução] GERAL (PS2!AK2) =', geral, '→', geralPct, '%');
+    }
+    updateEvolucao(geralPct != null ? geralPct : 0);
+  }).catch(err => {
+    console.warn('Falha a carregar prioridade ativa/evolução do PS2:', err);
+    const ativaBox = document.getElementById('prioridadeAtiva');
+    const ativaValueEl = document.getElementById('prioridadeAtivaValue');
+    if (ativaValueEl) ativaValueEl.textContent = '—';
+    if (ativaBox) ativaBox.classList.add('is-empty');
+    updatePrioridadeEmCurso(null, null);
+    updateEvolucao(0);
+  });
 }
 
 function initializeSheetWatcher() {
-  const stopPs2 = watchSheetRow(SHEET_CONFIG, renderSheetData, SHEET_POLL_INTERVAL);
+  // Watcher principal: PS2 (fonte primária — ao mudar dispara re-render completo)
+  const stopPs1 = watchSheetRow(SHEET_CONFIG, renderSheetData, SHEET_POLL_INTERVAL);
+
+  // Watcher dedicado: montagemEditável (países) — dispara só re-render do bloco país
+  const stopPaises = watchSheetTab(
+    { tab: 'montagemEditável' },
+    () => loadAndRenderPaises(),
+    SHEET_POLL_INTERVAL
+  );
 
   window.addEventListener('beforeunload', () => {
-    stopPs2();
+    stopPs1();
+    stopPaises();
   });
 }
 

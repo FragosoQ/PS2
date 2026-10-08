@@ -590,7 +590,9 @@ main {
   padding: clamp(6px, 1vh, 12px) clamp(10px, 1.5vw, 18px) 0;
   border-top: 1px solid rgba(255,255,255,0.1);
 }
-.prio-curso[hidden] { display: none; }
+.prio-curso.is-empty .prio-curso-name,
+.prio-curso.is-empty .prio-curso-pct { color: rgba(255,255,255,0.4); }
+.prio-curso.is-empty .prio-curso-pct small { display: none; }
 .prio-curso-top {
   display: flex; align-items: flex-end; justify-content: space-between;
   margin-bottom: clamp(4px, 0.6vh, 8px);
@@ -965,7 +967,7 @@ footer {
         <div style="margin-top:auto;font-size:clamp(14px,1.8vh,20px);font-weight:700;letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,0.75);">Evolução Global</div>
         <div id="evNum" style="font-family:'Bebas Neue',sans-serif;font-size:clamp(140px,22vh,340px);line-height:.85;letter-spacing:-2px;">46%</div>
         <div id="statusLabel" style="font-size:clamp(15px,2vh,22px);letter-spacing:4px;color:rgba(255,255,255,0.75);text-transform:uppercase;">Em Curso · ON</div>
-        <div class="prio-curso" id="prioCurso" hidden>
+        <div class="prio-curso" id="prioCurso">
           <div class="prio-curso-top">
             <div>
               <div class="prio-curso-label">Prioridade em Curso</div>
@@ -2614,12 +2616,13 @@ async function fetchPs1Summary() {
 function updatePrioridadeEmCurso(prioridade, pct) {
   const box = document.getElementById('prioCurso');
   if (!box) return;
-  const visible = Boolean(prioridade) && pct != null;
-  box.hidden = !visible;
-  if (!visible) return;
-  document.getElementById('prioCursoName').textContent = /^\d+$/.test(prioridade) ? `P${prioridade}` : prioridade;
-  document.getElementById('prioCursoPct').textContent = pct;
-  document.getElementById('prioCursoBar').style.width = `${Math.max(0, Math.min(100, pct))}%`;
+  // Faixa sempre visível (espaço reservado); sem dados mostra "—" e barra vazia.
+  const hasPct = pct != null;
+  box.classList.toggle('is-empty', !prioridade || !hasPct);
+  const nameText = prioridade ? (/^\d+$/.test(prioridade) ? `P${prioridade}` : prioridade) : '—';
+  document.getElementById('prioCursoName').textContent = nameText;
+  document.getElementById('prioCursoPct').textContent = hasPct ? pct : '—';
+  document.getElementById('prioCursoBar').style.width = hasPct ? `${Math.max(0, Math.min(100, pct))}%` : '0%';
 }
 
 function refreshPs1Fields() {

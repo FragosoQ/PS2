@@ -2603,7 +2603,7 @@ async function fetchPs1Summary() {
     const index = findSheetCell(table, header, column);
     return index >= 0 ? getValueFromRow(row, index) : null;
   };
-  const prioridadeAtiva = readValue('Posto2', 'CJ');
+  const prioridadeAtiva = readValue('Posto2', 'CP');
   return {
     prioridadeAtiva,
     prioridadeAtivaPct: getPs1ActivePriorityPercentage(table, row, prioridadeAtiva),

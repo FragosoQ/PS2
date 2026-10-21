@@ -2389,7 +2389,8 @@ function updateDeadline(startValue, dueValue) {
   }
 
   const ratio = total > 0 ? Math.min(1, used / total) : 0;
-  const pc = ratio >= .9 ? '#ff3b3b' : ratio >= .7 ? '#ffaa00' : '#00ff87';
+  const overdue = used > total;
+  const pc = overdue ? '#ff3b3b' : ratio >= .7 ? '#ffaa00' : '#00ff87';
 
   if (prazoUsedEl) {
     prazoUsedEl.textContent = used;
@@ -2402,7 +2403,7 @@ function updateDeadline(startValue, dueValue) {
   }
   if (folgaEl) {
     folgaEl.textContent = `${remaining} dias restantes`;
-    folgaEl.style.color = remaining <= 1 ? '#ff3b3b' : remaining <= 3 ? '#ffaa00' : '#00ff87';
+    folgaEl.style.color = overdue ? '#ff3b3b' : remaining <= 3 ? '#ffaa00' : '#00ff87';
   }
   if (prazoTotalEl) {
     prazoTotalEl.textContent = total;

@@ -165,6 +165,9 @@ header {
   left: clamp(10px, 1.5vw, 18px);
   align-items: center;
 }
+#prioridadeAtiva {
+  display: none;
+}
 
 /* ══════════════════════════════════════
    MAIN
@@ -2567,7 +2570,7 @@ function renderSheetData(sheetRow) {
   if (!sheetRow) return;
 
   // Modelo, Lote e datas vêm do PS2 (refreshPs1Details)
-  // Evolução Global vem do PS2!AK (refreshPs1Fields)
+  // Evolução Global vem do PS2!N (refreshPs1Fields)
   // Países vêm de montagemEditável (refrescados pelo seu próprio watcher — ver loadAndRenderPaises)
   refreshPs1Details();
   refreshPs1Fields();
@@ -2607,7 +2610,7 @@ async function fetchPs1Summary() {
   return {
     prioridadeAtiva,
     prioridadeAtivaPct: getPs1ActivePriorityPercentage(table, row, prioridadeAtiva),
-    geral: readValue('GERAL', 'AK'),
+    geral: readValue('GERAL(T)', 'N'),
   };
 }
 
@@ -2619,7 +2622,7 @@ function updatePrioridadeEmCurso(prioridade, pct) {
   // Faixa sempre visível (espaço reservado); sem dados mostra "—" e barra vazia.
   const hasPct = pct != null;
   box.classList.toggle('is-empty', !prioridade || !hasPct);
-  const nameText = prioridade ? (/^\d+$/.test(prioridade) ? `P${prioridade}` : prioridade) : '—';
+  const nameText = prioridade ? `P${prioridade.replace(/^P/i, '')}` : '—';
   document.getElementById('prioCursoName').textContent = nameText;
   document.getElementById('prioCursoPct').textContent = hasPct ? pct : '—';
   document.getElementById('prioCursoBar').style.width = hasPct ? `${Math.max(0, Math.min(100, pct))}%` : '0%';
@@ -2638,9 +2641,9 @@ function refreshPs1Fields() {
 
     const geralPct = parseSheetPercentage(geral);
     if (geralPct == null) {
-      console.warn('[evolução] valor de GERAL (PS2!AK2) não parseável:', geral);
+      console.warn('[evolução] valor de GERAL(T) (PS2!N2) não parseável:', geral);
     } else {
-      console.log('[evolução] GERAL (PS2!AK2) =', geral, '→', geralPct, '%');
+      console.log('[evolução] GERAL(T) (PS2!N2) =', geral, '→', geralPct, '%');
     }
     updateEvolucao(geralPct != null ? geralPct : 0);
   }).catch(err => {

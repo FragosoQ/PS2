@@ -1925,6 +1925,7 @@ function getCountryCoordinates(countryName) {
 }
 
 </script>
+<script src="ps2-priority-progress.js"></script>
 <script>
 /* ── CORES ── */
 const ec = v => v >= 75 ? '#00ff87' : v >= 40 ? '#00d4ff' : '#ffaa00';
@@ -2600,28 +2601,6 @@ function renderSheetData(sheetRow) {
   renderZones(sheetRow);
 }
 
-function getPs1ActivePriorityPercentage(table, row, activePriority) {
-  const priorityNumber = Number(String(activePriority == null ? '' : activePriority).trim());
-  if (!Number.isInteger(priorityNumber) || priorityNumber < 1) return null;
-
-  const startIndex = columnLetterToIndex('AL');
-  const endIndex = columnLetterToIndex('CE');
-  const targetHeader = normalizeString(`P${priorityNumber}`);
-  for (let index = startIndex; index <= endIndex && index + 1 < table.cols.length; index += 1) {
-    const header = normalizeString(table.cols[index].label || table.cols[index].id || '');
-    if (header !== targetHeader) continue;
-
-    const percentageHeader = normalizeString(table.cols[index + 1].label || table.cols[index + 1].id || '');
-    if (percentageHeader !== '%') return null;
-
-    const rawPercentage = getValueFromRow(row, index + 1);
-    if (rawPercentage == null || String(rawPercentage).trim() === '') return null;
-    const percentage = parseSheetPercentage(rawPercentage);
-    return percentage != null && percentage !== 100 ? percentage : null;
-  }
-  return null;
-}
-
 async function fetchPs1Summary() {
   const table = await fetchSecondaryTable('PS2');
   const row = table && Array.isArray(table.rows) ? table.rows[0] : null;
@@ -2630,9 +2609,12 @@ async function fetchPs1Summary() {
     return index >= 0 ? getValueFromRow(row, index) : null;
   };
   const prioridadeAtiva = readValue('Posto2', 'CP');
+  const inicioPrioridade = Ps2PriorityProgress.readSeriesValue(table, row, 'T', prioridadeAtiva);
+  const tempoPrevisto = Ps2PriorityProgress.readSeriesValue(table, row, 'TP', prioridadeAtiva);
+  const sinalConclusao = Ps2PriorityProgress.getCompletionSignal(table, row, prioridadeAtiva);
   return {
     prioridadeAtiva,
-    prioridadeAtivaPct: getPs1ActivePriorityPercentage(table, row, prioridadeAtiva),
+    prioridadeAtivaPct: Ps2PriorityProgress.calculateProgress(inicioPrioridade, tempoPrevisto, sinalConclusao),
     geral: readValue('GERAL(T)', 'N'),
   };
 }
@@ -2647,7 +2629,7 @@ function updatePrioridadeEmCurso(prioridade, pct) {
   box.classList.toggle('is-empty', !prioridade || !hasPct);
   const nameText = prioridade ? `P${prioridade.replace(/^P/i, '')}` : '—';
   document.getElementById('prioCursoName').textContent = nameText;
-  document.getElementById('prioCursoPct').textContent = hasPct ? pct : '—';
+  document.getElementById('prioCursoPct').textContent = hasPct ? Ps2PriorityProgress.formatPercent(pct) : '—';
   document.getElementById('prioCursoBar').style.width = hasPct ? `${Math.max(0, Math.min(100, pct))}%` : '0%';
 }
 

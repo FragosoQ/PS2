@@ -1985,10 +1985,9 @@ const ZONA_CONFIGS = [
       mode: 'row-headers',
       startColumn: 'AL',
       endColumn: 'CE',
-      ignoreLabels: ['%'],
+      percentLabel: '%',
       hideHeader: true,
       gridLayout: { cols: 4, rows: 3, flow: 'column' },
-      matchValue: 2,
       limit: 12,
     },
   },
@@ -2159,6 +2158,29 @@ async function fetchZonaListValues(source) {
     const ignore = new Set((source.ignoreLabels || []).map(s => String(s).trim()));
     const firstRow = table.rows[0]; // linha 2 da Sheet (gviz com headers=1 desloca)
     const limit = Math.max(1, source.limit || 50);
+    if (source.percentLabel !== undefined && source.percentLabel !== null) {
+      const percentLabel = String(source.percentLabel).trim();
+      const values = [];
+      const getHeader = index => {
+        const col = table.cols[index] || {};
+        const label = col.label != null ? String(col.label).trim() : '';
+        return label || String(col.id || '').trim();
+      };
+      const isHundredPercent = value => {
+        if (typeof value === 'number') return value === 1 || value === 100;
+        if (typeof value !== 'string') return false;
+        const text = value.trim().replace(',', '.');
+        const numberText = text.endsWith('%') ? text.slice(0, -1).trim() : text;
+        return numberText !== '' && Number.isFinite(Number(numberText)) && Number(numberText) === 100;
+      };
+
+      for (let i = startIdx + 1; i <= endIdx && i < table.cols.length && values.length < limit; i += 1) {
+        if (getHeader(i) !== percentLabel || !isHundredPercent(getValueFromRow(firstRow, i))) continue;
+        const label = getHeader(i - 1);
+        if (label !== '' && label !== percentLabel) values.push(label);
+      }
+      return values;
+    }
     // matchValue: se definido, só mostra colunas cuja célula da linha 2
     // tenha esse valor exacto.
     const matchValue = source.matchValue;

@@ -2633,8 +2633,17 @@ function updatePrioridadeEmCurso(prioridade, pct) {
   document.getElementById('prioCursoBar').style.width = hasPct ? `${Math.max(0, Math.min(100, pct))}%` : '0%';
 }
 
+let activePriorityProgressData = null;
+
+function renderActivePriorityProgress() {
+  if (!activePriorityProgressData) return;
+  const { prioridade, inicio, previsto, conclusao } = activePriorityProgressData;
+  const pct = Ps2PriorityProgress.calculateProgress(inicio, previsto, conclusao);
+  updatePrioridadeEmCurso(prioridade, pct);
+}
+
 function refreshPs1Fields() {
-  return fetchPs1Summary().then(({ prioridadeAtiva, prioridadeAtivaPct, geral }) => {
+  return fetchPs1Summary().then(({ prioridadeAtiva, inicioPrioridade, tempoPrevisto, sinalConclusao, geral }) => {
     const ativaBox = document.getElementById('prioridadeAtiva');
     const ativaValueEl = document.getElementById('prioridadeAtivaValue');
     const prioridade = prioridadeAtiva != null && String(prioridadeAtiva).trim() !== ''
@@ -2642,7 +2651,10 @@ function refreshPs1Fields() {
       : null;
     if (ativaValueEl) ativaValueEl.textContent = prioridade || '—';
     if (ativaBox) ativaBox.classList.toggle('is-empty', !prioridade);
-    updatePrioridadeEmCurso(prioridade, prioridadeAtivaPct);
+    activePriorityProgressData = prioridade
+      ? { prioridade, inicio: inicioPrioridade, previsto: tempoPrevisto, conclusao: sinalConclusao }
+      : null;
+    renderActivePriorityProgress();
 
     const geralPct = parseSheetPercentage(geral);
     if (geralPct == null) {
@@ -2661,6 +2673,8 @@ function refreshPs1Fields() {
     updateEvolucao(0);
   });
 }
+
+setInterval(renderActivePriorityProgress, SHEET_POLL_INTERVAL);
 
 function initializeSheetWatcher() {
   // Watcher principal: PS2 (fonte primária — ao mudar dispara re-render completo)

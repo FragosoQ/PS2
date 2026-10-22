@@ -10,7 +10,7 @@
     '0.1', '0.2', '0.3', '1', '2', '3', '4', '5', '6', '7.1', '7.2', '8', '9', '10',
     '11.1', '11.2', '11.3', '12.1', '12.2', '12.3', '13.1', '13.2', '13.3', '14', '15', '16',
   ];
-  const WORK_INTERVALS = [[8, 13], [14, 18]];
+  const WORK_INTERVALS = [[8, 0, 13, 0], [14, 0, 17, 15]];
   const FIXED_HOLIDAYS = ['01-01', '04-25', '05-01', '06-10', '08-15', '10-05', '11-01', '12-01', '12-25'];
   const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -224,11 +224,11 @@
 
     while (day <= lastDay) {
       if (isWorkday(day)) {
-        for (const [fromHour, toHour] of WORK_INTERVALS) {
+        for (const [fromHour, fromMinute, toHour, toMinute] of WORK_INTERVALS) {
           const intervalStart = new Date(day);
-          intervalStart.setHours(fromHour, 0, 0, 0);
+          intervalStart.setHours(fromHour, fromMinute, 0, 0);
           const intervalEnd = new Date(day);
-          intervalEnd.setHours(toHour, 0, 0, 0);
+          intervalEnd.setHours(toHour, toMinute, 0, 0);
           const overlapStart = Math.max(start.getTime(), intervalStart.getTime());
           const overlapEnd = Math.min(end.getTime(), intervalEnd.getTime());
           elapsed += Math.max(0, overlapEnd - overlapStart);

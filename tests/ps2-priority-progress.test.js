@@ -33,10 +33,24 @@ test('aplica a pausa das 13:00 às 14:00 no exemplo indicado', () => {
   assert.equal(calculateProgress('11:49:52', '09:00:00', null, now), 16.7);
 });
 
+test('interpreta data e duração serializadas pelo gviz', () => {
+  const now = dateAt(22, 14, 42);
+  assert.equal(
+    calculateProgress('Date(2026,9,22,11,49,52)', 'Date(1899,11,30,9,0,0)', null, now),
+    16.7
+  );
+});
+
 test('considera apenas tempo de trabalho entre dias úteis', () => {
   const start = dateAt(23, 17, 30);
   const now = dateAt(26, 9, 30);
-  assert.equal(calculateProgress(start, '12:00:00', null, now), 16.7);
+  assert.equal(calculateProgress(start, '09:00:00', null, now), 16.7);
+});
+
+test('não acumula tempo depois das 17:15', () => {
+  const start = dateAt(22, 16, 15);
+  assert.equal(calculateProgress(start, '06:00:00', null, dateAt(22, 17, 15)), 16.7);
+  assert.equal(calculateProgress(start, '06:00:00', null, dateAt(22, 18)), 16.7);
 });
 
 test('devolve sem progresso para dados temporais ausentes, mas permite conclusão a 100%', () => {
@@ -52,6 +66,7 @@ test('só reconhece conclusão exatamente igual a 100%', () => {
   assert.equal(isExactlyComplete(0.999), false);
   assert.equal(isExactlyComplete('99,9%'), false);
   assert.equal(isExactlyComplete(null), false);
+  assert.equal(calculateProgress(dateAt(22, 8), '09:00:00', '99,9%', dateAt(22, 18)), 83.3);
 });
 
 test('lê T/TP pelos cabeçalhos e mantém alinhamento pelas colunas da Sheet sem rótulos', () => {

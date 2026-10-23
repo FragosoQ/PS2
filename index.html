@@ -1983,13 +1983,11 @@ const ZONA_CONFIGS = [
     type: 'list',
     listSource: {
       tab: 'PS2',
-      mode: 'row-headers',
-      startColumn: 'AL',
-      endColumn: 'CE',
-      percentLabel: '%',
+      mode: 'range-headers',
+      range: 'CU1:DT2',
+      matchValue: 2,
       hideHeader: true,
-      gridLayout: { cols: 4, rows: 3, flow: 'column' },
-      limit: 12,
+      gridLayout: { cols: 4, rows: 7, flow: 'column' },
     },
   },
   { nome: 'Envolventes', tab: 'PS2', header: 'Envolventes', column: 'R' },
@@ -2144,8 +2142,31 @@ async function fetchZonaListValues(source) {
   const cfg = {
     id: SHEET_CONFIG_DEFAULT.id,
     tab: source.tab,
+    range: source.range,
   };
   const table = await fetchSheetTable(cfg);
+
+  if (source.mode === 'range-headers') {
+    if (!table || !Array.isArray(table.cols) || !Array.isArray(table.rows) || !table.rows[0] || !table.rows[1]) {
+      return [];
+    }
+    const headerRow = table.rows[0];
+    const valuesRow = table.rows[1];
+    const matchValue = Number(source.matchValue);
+    const values = [];
+    for (let i = 0; i < table.cols.length; i += 1) {
+      const rawValue = getValueFromRow(valuesRow, i);
+      const numericValue = typeof rawValue === 'number'
+        ? rawValue
+        : Number(String(rawValue == null ? '' : rawValue).trim().replace(',', '.'));
+      if (!Number.isFinite(numericValue) || numericValue !== matchValue) continue;
+
+      const rawLabel = getValueFromRow(headerRow, i);
+      const label = rawLabel == null ? '' : String(rawLabel).trim();
+      if (label !== '') values.push(label.replace(/\./g, '_'));
+    }
+    return values;
+  }
 
   if (source.mode === 'row-headers') {
     if (!table || !Array.isArray(table.cols) || !Array.isArray(table.rows) || !table.rows[0]) {
@@ -2314,8 +2335,10 @@ function renderZones(rowData) {
   ZONA_CONFIGS.forEach(config => {
     if (config.type === 'list') {
       const src = config.listSource || {};
-      const cacheKey = src.mode === 'row-headers'
-        ? `list|${src.tab}|rowheaders|${src.startColumn}-${src.endColumn}`
+      const cacheKey = src.range
+        ? `list|${src.tab}|range|${src.range}|match=${src.matchValue}`
+        : src.mode === 'row-headers'
+          ? `list|${src.tab}|rowheaders|${src.startColumn}-${src.endColumn}`
         : `list|${src.tab}|${src.column || src.header}`;
       const cached = ZONA_LIST_CACHE[cacheKey];
       const card = buildZonaListCard(config, cached);

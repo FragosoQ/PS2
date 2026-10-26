@@ -95,6 +95,34 @@
     return getCellValue(row, index + 1);
   }
 
+  function usesTimeProgress(priority) {
+    return ['0.1', '0.2', '0.3', '11.1', '11.2', '11.3'].includes(normalizePriority(priority));
+  }
+
+  function getPriorityPercentage(table, row, priority) {
+    if (!table || !Array.isArray(table.cols)) return null;
+    const suffix = normalizePriority(priority);
+    if (!PRIORITY_SUFFIXES.includes(suffix)) return null;
+    const index = table.cols.findIndex(col => normalizeHeader(getHeaderLabel(col)) === normalizeHeader(`P${suffix}`));
+    if (index < 0 || normalizeHeader(getHeaderLabel(table.cols[index + 1])) !== '%') return null;
+
+    const cell = row && Array.isArray(row.c) ? row.c[index + 1] : null;
+    const value = cell && cell.f != null ? cell.f : cell && cell.v;
+    if (value == null || String(value).trim() === '') return null;
+    if (typeof value === 'number') {
+      const percent = Math.abs(value) <= 1 ? value * 100 : value;
+      return Math.round(percent * 10) / 10;
+    }
+
+    const text = String(value).trim().replace(',', '.');
+    const percentMatch = text.match(/^([+-]?\d+(?:\.\d+)?)\s*%$/);
+    const numericMatch = text.match(/^[+-]?\d+(?:\.\d+)?$/);
+    if (!percentMatch && !numericMatch) return null;
+    const numeric = Number((percentMatch || numericMatch)[1]);
+    const percent = !percentMatch && Math.abs(numeric) <= 1 ? numeric * 100 : numeric;
+    return Math.round(percent * 10) / 10;
+  }
+
   function isExactlyComplete(value) {
     if (typeof value === 'number') return value === 1 || value === 100;
     if (value == null) return false;
@@ -258,10 +286,12 @@
     calculateProgress,
     formatPercent,
     getCompletionSignal,
+    getPriorityPercentage,
     isExactlyComplete,
     normalizePriority,
     parseDuration,
     parseStart,
     readSeriesValue,
+    usesTimeProgress,
   };
 });

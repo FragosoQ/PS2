@@ -4,9 +4,11 @@ const {
   calculateProgress,
   formatPercent,
   getCompletionSignal,
+  getPriorityPercentage,
   isExactlyComplete,
   parseDuration,
   readSeriesValue,
+  usesTimeProgress,
 } = require('../ps2-priority-progress.js');
 
 function dateAt(day, hour, minute = 0, second = 0) {
@@ -94,6 +96,21 @@ test('associa o sinalizador de conclusão à prioridade ativa e formata com vír
   assert.equal(getCompletionSignal(table, row, 1), 1);
   assert.equal(formatPercent(16.7), '16,7');
   assert.equal(formatPercent(50), '50,0');
+});
+
+test('lê diretamente a percentagem da coluna adjacente à prioridade', () => {
+  const table = { cols: [{ label: 'P6' }, { label: '%' }] };
+  const row = { c: [{ v: null }, { v: 0.43, f: '43%' }] };
+  assert.equal(getPriorityPercentage(table, row, 'P6'), 43);
+  assert.equal(getPriorityPercentage(table, { c: [{ v: null }, { v: 43 }] }, '6'), 43);
+});
+
+test('usa progresso temporal apenas nas prioridades especiais indicadas', () => {
+  for (const priority of ['0,1', '0,2', '0,3', '11,1', '11,2', '11,3']) {
+    assert.equal(usesTimeProgress(priority), true);
+  }
+  assert.equal(usesTimeProgress('P6'), false);
+  assert.equal(usesTimeProgress('12,1'), false);
 });
 
 test('interpreta duração decimal do gviz como fração de dia', () => {

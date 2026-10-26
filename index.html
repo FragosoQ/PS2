@@ -2632,12 +2632,25 @@ async function fetchPs1Summary() {
     return index >= 0 ? getValueFromRow(row, index) : null;
   };
   const prioridadeAtiva = readValue('Posto2', 'CP');
-  const inicioPrioridade = Ps2PriorityProgress.readSeriesValue(table, row, 'T', prioridadeAtiva);
-  const tempoPrevisto = Ps2PriorityProgress.readSeriesValue(table, row, 'TP', prioridadeAtiva);
-  const sinalConclusao = Ps2PriorityProgress.getCompletionSignal(table, row, prioridadeAtiva);
+  const usaProgressoTemporal = Ps2PriorityProgress.usesTimeProgress(prioridadeAtiva);
+  const inicioPrioridade = usaProgressoTemporal
+    ? Ps2PriorityProgress.readSeriesValue(table, row, 'T', prioridadeAtiva)
+    : null;
+  const tempoPrevisto = usaProgressoTemporal
+    ? Ps2PriorityProgress.readSeriesValue(table, row, 'TP', prioridadeAtiva)
+    : null;
+  const sinalConclusao = usaProgressoTemporal
+    ? Ps2PriorityProgress.getCompletionSignal(table, row, prioridadeAtiva)
+    : null;
   return {
     prioridadeAtiva,
-    prioridadeAtivaPct: Ps2PriorityProgress.calculateProgress(inicioPrioridade, tempoPrevisto, sinalConclusao),
+    usaProgressoTemporal,
+    inicioPrioridade,
+    tempoPrevisto,
+    sinalConclusao,
+    prioridadeAtivaPct: usaProgressoTemporal
+      ? Ps2PriorityProgress.calculateProgress(inicioPrioridade, tempoPrevisto, sinalConclusao)
+      : Ps2PriorityProgress.getPriorityPercentage(table, row, prioridadeAtiva),
     geral: readValue('GERAL(T)', 'N'),
   };
 }
@@ -2652,7 +2665,8 @@ function updatePrioridadeEmCurso(prioridade, pct) {
   box.classList.toggle('is-empty', !prioridade || !hasPct);
   const nameText = prioridade ? `P${prioridade.replace(/^P/i, '')}` : '—';
   document.getElementById('prioCursoName').textContent = nameText;
-  document.getElementById('prioCursoPct').textContent = hasPct ? Ps2PriorityProgress.formatPercent(pct) : '—';
+  const formattedPct = Number.isInteger(pct) ? String(pct) : Ps2PriorityProgress.formatPercent(pct);
+  document.getElementById('prioCursoPct').textContent = hasPct ? formattedPct : '—';
   document.getElementById('prioCursoBar').style.width = hasPct ? `${Math.max(0, Math.min(100, pct))}%` : '0%';
 }
 
@@ -2660,13 +2674,15 @@ let activePriorityProgressData = null;
 
 function renderActivePriorityProgress() {
   if (!activePriorityProgressData) return;
-  const { prioridade, inicio, previsto, conclusao } = activePriorityProgressData;
-  const pct = Ps2PriorityProgress.calculateProgress(inicio, previsto, conclusao);
+  const { prioridade, usaProgressoTemporal, inicio, previsto, conclusao, pct: directPct } = activePriorityProgressData;
+  const pct = usaProgressoTemporal
+    ? Ps2PriorityProgress.calculateProgress(inicio, previsto, conclusao)
+    : directPct;
   updatePrioridadeEmCurso(prioridade, pct);
 }
 
 function refreshPs1Fields() {
-  return fetchPs1Summary().then(({ prioridadeAtiva, inicioPrioridade, tempoPrevisto, sinalConclusao, geral }) => {
+  return fetchPs1Summary().then(({ prioridadeAtiva, usaProgressoTemporal, inicioPrioridade, tempoPrevisto, sinalConclusao, prioridadeAtivaPct, geral }) => {
     const ativaBox = document.getElementById('prioridadeAtiva');
     const ativaValueEl = document.getElementById('prioridadeAtivaValue');
     const prioridade = prioridadeAtiva != null && String(prioridadeAtiva).trim() !== ''
@@ -2675,7 +2691,14 @@ function refreshPs1Fields() {
     if (ativaValueEl) ativaValueEl.textContent = prioridade || '—';
     if (ativaBox) ativaBox.classList.toggle('is-empty', !prioridade);
     activePriorityProgressData = prioridade
-      ? { prioridade, inicio: inicioPrioridade, previsto: tempoPrevisto, conclusao: sinalConclusao }
+      ? {
+          prioridade,
+          usaProgressoTemporal,
+          inicio: inicioPrioridade,
+          previsto: tempoPrevisto,
+          conclusao: sinalConclusao,
+          pct: prioridadeAtivaPct,
+        }
       : null;
     renderActivePriorityProgress();
 

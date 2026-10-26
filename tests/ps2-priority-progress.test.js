@@ -103,6 +103,7 @@ test('lê diretamente a percentagem da coluna adjacente à prioridade', () => {
   const row = { c: [{ v: null }, { v: 0.43, f: '43%' }] };
   assert.equal(getPriorityPercentage(table, row, 'P6'), 43);
   assert.equal(getPriorityPercentage(table, { c: [{ v: null }, { v: 43 }] }, '6'), 43);
+  assert.equal(getPriorityPercentage(table, { c: [{ v: null }, { v: 3 / 7, f: '43%' }] }, 'P6'), 42.9);
 });
 
 test('usa progresso temporal apenas nas prioridades especiais indicadas', () => {

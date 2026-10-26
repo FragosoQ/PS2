@@ -2665,8 +2665,7 @@ function updatePrioridadeEmCurso(prioridade, pct) {
   box.classList.toggle('is-empty', !prioridade || !hasPct);
   const nameText = prioridade ? `P${prioridade.replace(/^P/i, '')}` : '—';
   document.getElementById('prioCursoName').textContent = nameText;
-  const formattedPct = Number.isInteger(pct) ? String(pct) : Ps2PriorityProgress.formatPercent(pct);
-  document.getElementById('prioCursoPct').textContent = hasPct ? formattedPct : '—';
+  document.getElementById('prioCursoPct').textContent = hasPct ? Ps2PriorityProgress.formatPercent(pct) : '—';
   document.getElementById('prioCursoBar').style.width = hasPct ? `${Math.max(0, Math.min(100, pct))}%` : '0%';
 }
 

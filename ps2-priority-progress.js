@@ -107,7 +107,7 @@
     if (index < 0 || normalizeHeader(getHeaderLabel(table.cols[index + 1])) !== '%') return null;
 
     const cell = row && Array.isArray(row.c) ? row.c[index + 1] : null;
-    const value = cell && cell.f != null ? cell.f : cell && cell.v;
+    const value = cell && typeof cell.v === 'number' ? cell.v : cell && (cell.f != null ? cell.f : cell.v);
     if (value == null || String(value).trim() === '') return null;
     if (typeof value === 'number') {
       const percent = Math.abs(value) <= 1 ? value * 100 : value;

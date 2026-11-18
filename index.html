@@ -43,6 +43,14 @@ html, body {
   min-height: 0;
 }
 
+.zonas-grid { grid-auto-rows: minmax(0, 1fr); }
+.zona-card { min-height: 0; }
+.zona-card-list-items.is-grid-list {
+  grid-template-rows: repeat(var(--grid-rows, 4), minmax(0, 1fr));
+}
+
+
+  
 /* ══════════════════════════════════════
    BACKGROUND TEXTURE
 ══════════════════════════════════════ */
